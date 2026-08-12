@@ -1,3 +1,5 @@
+TerriData_Dim2 <- import("../datos/TerriData_Dim2.xlsx")
+
 tenderos_tarea4=TerriData_Dim2 %>%
   select(`Departamento`,`Dato Numérico`)%>%
   mutate(`Dato Numérico` = as.numeric(gsub(",", ".", gsub("\\.", "", `Dato Numérico`)))) %>%
