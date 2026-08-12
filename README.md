@@ -21,5 +21,6 @@ Cada script en la carpeta `scripts/` corresponde a un punto específico del tall
 | `Tarea 2` | Calcula el porcentaje promedio de uso de internet según el tipo de actividad económica del tendero. |
 | `Tarea 3` | Calcula el porcentaje promedio de uso de internet agrupado por municipio/departamento y tipo de actividad. |
 | `Tarea 4` | Procesa la base TerriData_Dim2 para obtener el dato numérico total por departamento. |
+| `Tarea 5` | Reestructura la base de tenderos en un formato largo pensado para visualizar en Power BI y uno extenso para graficar la dispersión de la penetración de internet entre sectores. |
 
 
