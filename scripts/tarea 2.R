@@ -1,4 +1,6 @@
 TenderosFU03_Publica <- import("../datos/TenderosFU03_Publica.dta")
+library(dplyr)
+library(rio)
 
 tenderos_tarea2 <- bind_rows(
   TenderosFU03_Publica %>%
