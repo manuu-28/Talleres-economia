@@ -1,6 +1,6 @@
 # Talleres de Economía
 
-Repositorio para el desarrollo del Taller #3, en el cual se trabajó con bases de datos socioeconómicas para explorar el uso de internet por parte de tenderos y su relación con variables territoriales.
+Repositorio para el desarrollo del Taller #3, en el cual se trabajó con bases de datos socioeconómicas para explorar el uso de internet por parte de tenderos y su relación con variables territoriales. Las tareas 1-4 se encuentran en la carpeta scripts y la tarea 5 está en la carpeta excel.
 
 ## Integrantes del grupo
 
