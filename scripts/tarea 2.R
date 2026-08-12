@@ -1,3 +1,5 @@
+TenderosFU03_Publica <- import("../datos/TenderosFU03_Publica.dta")
+
 tenderos_tarea2 <- bind_rows(
   TenderosFU03_Publica %>%
   filter(actG1==1) %>%
