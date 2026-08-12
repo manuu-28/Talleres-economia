@@ -1,3 +1,7 @@
+library(dplyr)
+library(rio)
+TenderosFU03_Publica <- import("../datos/TenderosFU03_Publica.dta")
+
 tenderos_tarea3=TenderosFU03_Publica %>%
   select(uso_internet,actividad1,Munic_Dept)
 View(tenderos_tarea3)
