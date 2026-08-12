@@ -1,3 +1,5 @@
+library(dplyr)
+library(rio)
 TerriData_Dim2 <- import("../datos/TerriData_Dim2.xlsx")
 
 tenderos_tarea4=TerriData_Dim2 %>%
