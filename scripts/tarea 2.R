@@ -53,8 +53,8 @@ View(tenderos_tarea2)
 # ---- Visualización ----
 # Tasa de uso de internet según tipo de actividad económica
 grafico_tarea2 <- ggplot(tenderos_tarea2,
-                          aes(x = reorder(actividad_nombre, internet), y = internet)) +
-  geom_col(aes(fill = actividad_nombre == "Tienda")) +
+                          aes(x = reorder(actividad, internet), y = internet)) +
+  geom_col(aes(fill = actividad == "actG1")) +
   scale_fill_manual(values = c("TRUE" = "#D7263D", "FALSE" = "#2C7FB8"), guide = "none") +
   coord_flip() +
   labs(
