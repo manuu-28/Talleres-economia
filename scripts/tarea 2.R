@@ -49,3 +49,24 @@ tenderos_tarea2 <- bind_rows(
     summarise(actividad="actG11", internet=mean(uso_internet)*100),
 )
 View(tenderos_tarea2)
+
+# ---- Visualización ----
+# Tasa de uso de internet según tipo de actividad económica
+grafico_tarea2 <- ggplot(tenderos_tarea2,
+                          aes(x = reorder(actividad_nombre, internet), y = internet)) +
+  geom_col(aes(fill = actividad_nombre == "Tienda")) +
+  scale_fill_manual(values = c("TRUE" = "#D7263D", "FALSE" = "#2C7FB8"), guide = "none") +
+  coord_flip() +
+  labs(
+    title = "Tasa de uso de internet según tipo de actividad",
+    subtitle = "Tiendas (rojo) muy por debajo del resto de actividades",
+    x = NULL,
+    y = "% de uso de internet"
+  ) +
+  theme_minimal()
+
+grafico_tarea2
+
+ggsave("../graficos/tarea2_uso_internet_actividad.png",
+       plot = grafico_tarea2, width = 8, height = 6, dpi = 300)
+
