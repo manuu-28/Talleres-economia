@@ -46,7 +46,7 @@ tenderos_tarea2 <- bind_rows(
   
   TenderosFU03_Publica %>%
     filter(actG11==1) %>%
-    summarise(actividad="actG11", internet=mean(uso_internet)*100),
+    summarise(actividad="actG11", internet=mean(uso_internet)*100)
 )
 View(tenderos_tarea2)
 
