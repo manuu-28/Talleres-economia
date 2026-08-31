@@ -1,0 +1,133 @@
+library(dplyr)
+library(rio)
+library(tidyr)
+library(ggplot2)
+
+
+TenderosFU03_Publica <- import("../datos/TenderosFU03_Publica.dta")
+
+# =========================================================
+# Gráfico 1 (slide 3): Ingreso mensual mediano según uso de internet
+# =========================================================
+ingreso_uso <- TenderosFU03_Publica %>%
+  mutate(uso_internet_lbl = ifelse(uso_internet == 1, "Usa internet", "No usa internet")) %>%
+  group_by(uso_internet_lbl) %>%
+  summarise(
+    ingreso_mes_bueno = median(incomeMonth_buen, na.rm = TRUE),
+    ingreso_mes_malo  = median(incomeMonth_mal, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = c(ingreso_mes_bueno, ingreso_mes_malo),
+               names_to = "tipo_mes", values_to = "ingreso") %>%
+  mutate(tipo_mes = recode(tipo_mes,
+                            ingreso_mes_bueno = "Mes bueno",
+                            ingreso_mes_malo  = "Mes malo"))
+View(ingreso_uso)
+
+grafico_ingreso <- ggplot(ingreso_uso,
+                           aes(x = tipo_mes, y = ingreso / 1e6, fill = uso_internet_lbl)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("Usa internet" = "#2C7FB8", "No usa internet" = "#D7263D")) +
+  labs(
+    title = "Ingreso mensual mediano según uso de internet",
+    x = NULL, y = "Ingreso mensual mediano (millones COP)", fill = NULL
+  ) +
+  theme_minimal()
+
+grafico_ingreso
+ggsave("../graficos/slide3_ingreso_uso_internet.png",
+       plot = grafico_ingreso, width = 7, height = 5, dpi = 300)
+
+# =========================================================
+# Gráfico 2 (slide 5): Razones para no usar internet en el negocio
+# (variables no_uso_internet__1 a __4, solo entre quienes NO usan internet)
+# =========================================================
+razones_no_uso <- TenderosFU03_Publica %>%
+  filter(uso_internet == 0) %>%
+  summarise(
+    `No lo considera necesario`    = mean(no_uso_internet__1, na.rm = TRUE) * 100,
+    `No sabe cómo usarlo`          = mean(no_uso_internet__2, na.rm = TRUE) * 100,
+    `No tiene los recursos`        = mean(no_uso_internet__3, na.rm = TRUE) * 100,
+    `No tiene computador/celular`  = mean(no_uso_internet__4, na.rm = TRUE) * 100
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "razon", values_to = "pct")
+View(razones_no_uso)
+
+grafico_razones <- ggplot(razones_no_uso,
+                           aes(x = reorder(razon, pct), y = pct,
+                               fill = razon == "No lo considera necesario")) +
+  geom_col() +
+  scale_fill_manual(values = c("TRUE" = "#D7263D", "FALSE" = "#969696"), guide = "none") +
+  coord_flip() +
+  labs(
+    title = "Razones para no usar internet en el negocio",
+    subtitle = "La barrera principal es percepción, no habilidad",
+    x = NULL, y = "% de negocios que no usan internet"
+  ) +
+  theme_minimal()
+
+grafico_razones
+ggsave("../graficos/slide5_razones_no_uso.png",
+       plot = grafico_razones, width = 7, height = 5, dpi = 300)
+
+# =========================================================
+# Gráfico 3 (slide 6): ¿Para qué usan internet los negocios que ya lo usan?
+# (variables usos_internet__*, solo entre quienes SÍ usan internet)
+# NOTA: los códigos __1 (comunicación con clientes), __6 (redes sociales) y
+# __7 (banca / pagos digitales) se identificaron comparando los porcentajes
+# resultantes con los citados en la presentación (62%, 36.6% y 5.7%). El
+# resto de categorías se etiqueta con su código de pregunta (407x) porque el
+# .dta no trae el texto completo de la etiqueta (se corta a 80 caracteres);
+# complétalas con el nombre exacto desde el cuestionario/codebook si lo tienen.
+# =========================================================
+usos_internet <- TenderosFU03_Publica %>%
+  filter(uso_internet == 1) %>%
+  summarise(
+    `Comunicación con clientes`   = mean(usos_internet__1,  na.rm = TRUE) * 100,
+    `Redes sociales`              = mean(usos_internet__6,  na.rm = TRUE) * 100,
+    `Uso 407C`                    = mean(usos_internet__3,  na.rm = TRUE) * 100,
+    `Uso 407D`                    = mean(usos_internet__4,  na.rm = TRUE) * 100,
+    `Uso 407B`                    = mean(usos_internet__2,  na.rm = TRUE) * 100,
+    `Uso 407H`                    = mean(usos_internet__12, na.rm = TRUE) * 100,
+    `Uso 407I`                    = mean(usos_internet__13, na.rm = TRUE) * 100,
+    `Uso 407G`                    = mean(usos_internet__11, na.rm = TRUE) * 100,
+    `Uso 407J`                    = mean(usos_internet__14, na.rm = TRUE) * 100,
+    `Uso 407K`                    = mean(usos_internet__15, na.rm = TRUE) * 100,
+    `Uso 407L`                    = mean(usos_internet__10, na.rm = TRUE) * 100,
+    `Banca / pagos digitales`     = mean(usos_internet__7,  na.rm = TRUE) * 100
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "uso", values_to = "pct")
+View(usos_internet)
+
+grafico_usos <- ggplot(usos_internet,
+                        aes(x = reorder(uso, pct), y = pct,
+                            fill = uso == "Banca / pagos digitales")) +
+  geom_col() +
+  scale_fill_manual(values = c("TRUE" = "#D7263D", "FALSE" = "#2C7FB8"), guide = "none") +
+  coord_flip() +
+  labs(
+    title = "¿Para qué usan internet los negocios que ya lo usan?",
+    subtitle = "Banca/pagos digitales (rojo): la oportunidad con más espacio de crecimiento",
+    x = NULL, y = "% de usuarios de internet"
+  ) +
+  theme_minimal()
+
+grafico_usos
+ggsave("../graficos/slide6_usos_internet.png",
+       plot = grafico_usos, width = 7, height = 6, dpi = 300)
+
+# =========================================================
+# Formato largo para Power BI (Parte 2 del taller)
+# =========================================================
+tablero_powerbi <- TenderosFU03_Publica %>%
+  transmute(
+    Municipio_Departamento = Munic_Dept,
+    Actividad = actividad1,
+    Tienda = ifelse(actG1 == 1, "Tienda", "Resto de actividades"),
+    Uso_Internet = ifelse(uso_internet == 1, "Usa internet", "No usa internet"),
+    Porcentaje_Ventas_Internet = porcent_ventas_internet,
+    Ingreso_Mes_Bueno = incomeMonth_buen,
+    Ingreso_Mes_Malo = incomeMonth_mal,
+    Formalidad = self_reported_formal
+  )
+
+export(tablero_powerbi, "../excel/tablero_powerbi_datos_largos.xlsx")
